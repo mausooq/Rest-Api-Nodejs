@@ -1,9 +1,22 @@
 const express = require('express');
 const Users = require('./MOCK_DATA.json');
+const fs = require('fs')
 const app = express();
 const port = 3000;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
+
+app.use((req,res,next) => {
+    console.log('Request received 1');
+    req.user = "mausooq"
+    next()
+})
+app.use((req,res,next) => {
+    console.log('Request received 2 '+req.user);
+    fs.appendFile('log.txt', `\n${Date.now()}   :   ${req.method}  :  ${req.path}  :  ${req.ip}`,(err,data) => {
+        next()
+    })
+})
 
 // GET all users
 app.get('/api/users', (req, res) => {
